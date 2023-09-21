@@ -1,4 +1,3 @@
-# Write your code here :-)
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text.label import Label
 import terminalio
@@ -7,21 +6,26 @@ import math
 
 class Bar(displayio.Group):
     def __init__(self, min_val, max_val, width, height, n_segments=12,
-                 colours=[
-                    0x00FF00, 0x00FF00, 0x00FF00, # Green 0-2
-                    0xFFFF00, 0xFFFF00, 0xFFFF00, # Yellow 3-5
-                    0xFF6400, 0xFF6400,           # Amber 6-7
-                    0xFF0000, 0xFF0000, 0xFF0000, # Red 8-10
-                    0x7F00FF                      # Violet 11+
-                ] , display_value=True,
-                 label="", arc_colour=0xFF0000, colour_fade=False):
+                 colours=None , display_value=True,
+                 label=""):
         super().__init__()
+        if colours is None:
+            self.colours = [
+                0x00FF00, 0x00FF00, 0x00FF00, # Green 0-2
+                0xFFFF00, 0xFFFF00, 0xFFFF00, # Yellow 3-5
+                0xFF6400, 0xFF6400,           # Amber 6-7
+                0xFF0000, 0xFF0000, 0xFF0000, # Red 8-10
+                0x7F00FF                      # Violet 11+
+            ]
+        else:
+            self.colours = colours
+
+        print(type(self.colours))
         self.min_val = min_val
         self.max_val = max_val
         self.width = width
         self.height = height
         self.n_segments = n_segments
-        self.colours = colours
 
         self.d_label = Label(terminalio.FONT, text=label, color=0xFFFFFF)
         self.data = Label(terminalio.FONT, text=label, color=0xFFFFFF)
@@ -54,7 +58,6 @@ class Bar(displayio.Group):
         index = round(value / segment_width)
         num_hidden = 0
         num_to_hide = self.n_segments - index
-        #print(f"V: {value} SW: {segment_width} I: {index} NTH: {num_to_hide}")
         t_iter = iter(self) if (self.direction) else iter(reversed(self))
         for layer in t_iter:
             if type(layer) is Rect:
